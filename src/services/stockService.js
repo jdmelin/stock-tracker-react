@@ -1,8 +1,10 @@
-// require('dotenv').config();
+const stockService = {
+  fetchMyStocks() {
+    return fetch('/api/my-stocks');
+  },
 
-export default {
   fetchStocks() {
-    return fetch('/stocks');
+    return fetch('/api/stocks');
   },
 
   getAveragePrice(stocks) {
@@ -50,3 +52,5 @@ export default {
     return stocks;
   },
 };
+
+export default stockService;

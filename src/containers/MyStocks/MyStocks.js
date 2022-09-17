@@ -4,7 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Stock from '../../components/Stock/Stock';
 
-function Stocks() {
+function MyStocks() {
   const [stocks, setStocks] = useState([]);
   const [stockAverage, setStockAverage] = useState(0);
 
@@ -19,7 +19,7 @@ function Stocks() {
 
   const getStocks = async () => {
     try {
-      const response = await stockService.fetchStocks();
+      const response = await stockService.fetchMyStocks();
       const stockData = await response.json();
       const stocksWithPrices = await stockService.setStockPrices(stockData);
       setStocks(stocksWithPrices);
@@ -30,8 +30,8 @@ function Stocks() {
 
   return (
     <Container className="mt-5">
-      <h1 className="display-4">Stocks</h1>
-      <a href="/my-stocks">See Your Stocks</a>
+      <h1 className="display-4">My Stocks</h1>
+      <a href="/stocks">See All Stocks</a>
       <hr className="my-4" />
       <h4 className="mb-3">Average Price: ${stockAverage}</h4>
       <Row>
@@ -43,4 +43,4 @@ function Stocks() {
   );
 }
 
-export default Stocks;
+export default MyStocks;
