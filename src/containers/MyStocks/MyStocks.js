@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import stockService from '../../services/stockService';
-import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Stock from '../../components/Stock/Stock';
+import { Link } from 'react-router-dom';
 
 function MyStocks() {
   const [stocks, setStocks] = useState([]);
@@ -29,9 +29,9 @@ function MyStocks() {
   };
 
   return (
-    <Container className="mt-5">
+    <>
       <h1 className="display-4">My Stocks</h1>
-      <a href="/stocks">See All Stocks</a>
+      <Link to="/stocks">See All Stocks</Link>
       <hr className="my-4" />
       <h4 className="mb-3">Average Price: ${stockAverage}</h4>
       <Row>
@@ -39,7 +39,7 @@ function MyStocks() {
           <Stock key={stock.id} stock={stock} />
         ))}
       </Row>
-    </Container>
+    </>
   );
 }
 
