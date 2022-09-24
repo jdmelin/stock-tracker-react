@@ -1,10 +1,20 @@
 const stockService = {
+  getDefaultFetchOptions() {
+    const token = localStorage.getItem('token');
+
+    return {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  },
+
   fetchMyStocks() {
-    return fetch('/api/my-stocks');
+    return fetch('/api/my-stocks', this.getDefaultFetchOptions());
   },
 
   fetchStocks() {
-    return fetch('/api/stocks');
+    return fetch('/api/stocks', this.getDefaultFetchOptions());
   },
 
   getAveragePrice(stocks) {
@@ -20,22 +30,27 @@ const stockService = {
   },
 
   getStockPrice(symbol) {
-    const apiKey = process.env.REACT_APP_FINNHUB_API_KEY;
+    // const apiKey = process.env.REACT_APP_FINNHUB_API_KEY;
 
-    return fetch(
-      `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`
-    );
+    return new Promise((resolve) => {
+      resolve(5.01);
+    });
+
+    // return fetch(
+    //   `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`
+    // );
   },
 
   async setStockPrices(stockData) {
-    let stocks = [...stockData];
+    let stocks = JSON.parse(JSON.stringify(stockData));
 
     for (const stock of stocks) {
       let price;
       try {
         const response = await this.getStockPrice(stock.symbol);
-        const { c } = await response.json();
-        price = c;
+        // const { c } = await response.json();
+        // price = c;
+        price = response;
       } catch {
         price = 0;
       } finally {

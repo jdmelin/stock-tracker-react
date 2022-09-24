@@ -1,13 +1,37 @@
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import loginService from '../../services/loginService';
 
-function Login() {
+function Login({ onSetIsLoggedIn }) {
+  const navigate = useNavigate();
+
+  const submit = async (event) => {
+    event.preventDefault();
+
+    const payload = {
+      email: 'jsmith@test.com',
+      password: 'password123',
+    };
+
+    try {
+      const response = await loginService.logIn(payload);
+      const { message, token } = await response.json();
+
+      if (message === 'success') {
+        localStorage.setItem('token', token);
+        onSetIsLoggedIn(true);
+        navigate('/stocks');
+      }
+    } catch {
+      // handle error
+    }
+  };
   return (
     <Row className="login-container">
       <h1>Log In</h1>
-      <Form>
+      <Form onSubmit={submit}>
         <Form.Group className="mt-3">
           <Form.Label>Email Address</Form.Label>
           <Form.Control type="email" placeholder="Enter email" />
