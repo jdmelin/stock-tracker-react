@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import AppContainer from './containers/AppContainer/AppContainer';
+import Home from './containers/Home/Home';
 import Login from './containers/Login/Login';
 import Logout from './containers/Logout/Logout';
 import MyStocks from './containers/MyStocks/MyStocks';
@@ -10,6 +11,7 @@ import Stocks from './containers/Stocks/Stocks';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userId, setUserId] = useState(null);
 
   return (
     <BrowserRouter>
@@ -19,14 +21,19 @@ function App() {
             path="/"
             element={
               <ProtectedRoute isLoggedIn={isLoggedIn}>
-                <Stocks />
+                <Home userId={userId} />
               </ProtectedRoute>
             }
           />
           {!isLoggedIn && (
             <Route
               path="/login"
-              element={<Login onSetIsLoggedIn={setIsLoggedIn} />}
+              element={
+                <Login
+                  onSetIsLoggedIn={setIsLoggedIn}
+                  onSetUserId={setUserId}
+                />
+              }
             />
           )}
           <Route

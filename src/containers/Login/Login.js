@@ -5,7 +5,7 @@ import Row from 'react-bootstrap/Row';
 import { Link, useNavigate } from 'react-router-dom';
 import loginService from '../../services/loginService';
 
-function Login({ onSetIsLoggedIn }) {
+function Login({ onSetIsLoggedIn, onSetUserId }) {
   const [credentials, setCredentials] = useState({
     email: '',
     password: '',
@@ -15,7 +15,7 @@ function Login({ onSetIsLoggedIn }) {
   const handleChange = (event) => {
     const { name, value } = event.target;
 
-    setCredentials({...credentials, [name]: value });
+    setCredentials({ ...credentials, [name]: value });
   };
 
   const submit = async (event) => {
@@ -28,7 +28,8 @@ function Login({ onSetIsLoggedIn }) {
       if (message === 'success') {
         localStorage.setItem('token', token);
         onSetIsLoggedIn(true);
-        navigate(`/stocks/${userId}`);
+        onSetUserId(userId);
+        navigate(`/`);
       }
     } catch {
       // handle error
