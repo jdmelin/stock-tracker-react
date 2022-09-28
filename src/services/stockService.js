@@ -1,4 +1,11 @@
 const stockService = {
+  addStockToFavorites(userId, stockId) {
+    return fetch(`/api/stock/${userId}/${stockId}`, {
+      ...this.getDefaultFetchOptions(),
+      method: 'POST',
+    });
+  },
+
   getDefaultFetchOptions() {
     const token = localStorage.getItem('token');
 
@@ -9,12 +16,12 @@ const stockService = {
     };
   },
 
-  fetchMyStocks() {
-    return fetch('/api/my-stocks', this.getDefaultFetchOptions());
+  fetchMyStocks(userId) {
+    return fetch(`/api/my-stocks/${userId}`, this.getDefaultFetchOptions());
   },
 
-  fetchStocks() {
-    return fetch('/api/stocks', this.getDefaultFetchOptions());
+  fetchStocks(userId) {
+    return fetch(`/api/stocks/${userId}`, this.getDefaultFetchOptions());
   },
 
   getAveragePrice(stocks) {
@@ -30,15 +37,11 @@ const stockService = {
   },
 
   getStockPrice(symbol) {
-    // const apiKey = process.env.REACT_APP_FINNHUB_API_KEY;
+    const apiKey = process.env.REACT_APP_FINNHUB_API_KEY;
 
-    return new Promise((resolve) => {
-      resolve(5.01);
-    });
-
-    // return fetch(
-    //   `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`
-    // );
+    return fetch(
+      `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`
+    );
   },
 
   async setStockPrices(stockData) {
@@ -48,9 +51,8 @@ const stockService = {
       let price;
       try {
         const response = await this.getStockPrice(stock.symbol);
-        // const { c } = await response.json();
-        // price = c;
-        price = response;
+        const { c } = await response.json();
+        price = c;
       } catch {
         price = 0;
       } finally {
@@ -60,11 +62,18 @@ const stockService = {
           price,
         };
         const filteredStocks = stocks.filter((s) => stock.id !== s.id);
-        stocks = [...filteredStocks, updatedStock];
+        stocks = [...JSON.parse(JSON.stringify(filteredStocks)), updatedStock];
       }
     }
 
     return stocks;
+  },
+
+  removeStockFromFavorites(userId, stockId) {
+    return fetch(`/api/stock/${userId}/${stockId}`, {
+      ...this.getDefaultFetchOptions(),
+      method: 'DELETE',
+    });
   },
 };
 

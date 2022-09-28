@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
@@ -5,24 +6,29 @@ import { Link, useNavigate } from 'react-router-dom';
 import loginService from '../../services/loginService';
 
 function Login({ onSetIsLoggedIn }) {
+  const [credentials, setCredentials] = useState({
+    email: '',
+    password: '',
+  });
   const navigate = useNavigate();
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setCredentials({...credentials, [name]: value });
+  };
 
   const submit = async (event) => {
     event.preventDefault();
 
-    const payload = {
-      email: 'jsmith@test.com',
-      password: 'password123',
-    };
-
     try {
-      const response = await loginService.logIn(payload);
-      const { message, token } = await response.json();
+      const response = await loginService.logIn(credentials);
+      const { message, token, userId } = await response.json();
 
       if (message === 'success') {
         localStorage.setItem('token', token);
         onSetIsLoggedIn(true);
-        navigate('/stocks');
+        navigate(`/stocks/${userId}`);
       }
     } catch {
       // handle error
@@ -34,11 +40,21 @@ function Login({ onSetIsLoggedIn }) {
       <Form onSubmit={submit}>
         <Form.Group className="mt-3">
           <Form.Label>Email Address</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" />
+          <Form.Control
+            name="email"
+            onChange={handleChange}
+            type="email"
+            placeholder="Enter email"
+          />
         </Form.Group>
         <Form.Group className="mt-3">
           <Form.Label>Password</Form.Label>
-          <Form.Control type="password" placeholder="Password" />
+          <Form.Control
+            name="password"
+            onChange={handleChange}
+            type="password"
+            placeholder="Password"
+          />
         </Form.Group>
         <Button variant="primary" className="mt-3" type="submit">
           Log In

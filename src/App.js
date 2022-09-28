@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import AppContainer from './containers/AppContainer/AppContainer';
 import Login from './containers/Login/Login';
@@ -35,7 +35,7 @@ function App() {
           />
           {!isLoggedIn && <Route path="/register" element={<Register />} />}
           <Route
-            path="/stocks"
+            path="/stocks/:userId"
             element={
               <ProtectedRoute isLoggedIn={isLoggedIn}>
                 <Stocks />
@@ -43,7 +43,7 @@ function App() {
             }
           />
           <Route
-            path="/my-stocks"
+            path="/my-stocks/:userId"
             element={
               <ProtectedRoute isLoggedIn={isLoggedIn}>
                 <MyStocks />
