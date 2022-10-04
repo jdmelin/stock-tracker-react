@@ -1,6 +1,8 @@
+const baseUrl = process.env.REACT_APP_BASE_URL;
+
 const stockService = {
   addStockToFavorites(userId, stockId) {
-    return fetch(`/api/stock/${userId}/${stockId}`, {
+    return fetch(`${baseUrl}/stock/${userId}/${stockId}`, {
       ...this.getDefaultFetchOptions(),
       method: 'POST',
     });
@@ -17,11 +19,14 @@ const stockService = {
   },
 
   fetchMyStocks(userId) {
-    return fetch(`/api/my-stocks/${userId}`, this.getDefaultFetchOptions());
+    return fetch(
+      `${baseUrl}/my-stocks/${userId}`,
+      this.getDefaultFetchOptions()
+    );
   },
 
   fetchStocks(userId) {
-    return fetch(`/api/stocks/${userId}`, this.getDefaultFetchOptions());
+    return fetch(`${baseUrl}/stocks/${userId}`, this.getDefaultFetchOptions());
   },
 
   getAveragePrice(stocks) {
@@ -70,7 +75,7 @@ const stockService = {
   },
 
   removeStockFromFavorites(userId, stockId) {
-    return fetch(`/api/stock/${userId}/${stockId}`, {
+    return fetch(`${baseUrl}/stock/${userId}/${stockId}`, {
       ...this.getDefaultFetchOptions(),
       method: 'DELETE',
     });
