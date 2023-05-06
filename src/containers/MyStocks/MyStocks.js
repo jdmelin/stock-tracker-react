@@ -1,16 +1,22 @@
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useParams } from 'react-router-dom';
+import { removeMyStock, selectMyStocks, setMyStocks } from './myStocksSlice';
+import { removeAsFavorite } from '../Stocks/stocksSlice';
 import stockService from '../../services/stockService';
 import Row from 'react-bootstrap/Row';
 import Stock from '../../components/Stock/Stock';
-import { Link, useParams } from 'react-router-dom';
 
 function MyStocks() {
-  const [stocks, setStocks] = useState([]);
+  const stocks = useSelector(selectMyStocks);
+  const dispatch = useDispatch();
   const [stockAverage, setStockAverage] = useState(0);
   const { userId } = useParams();
 
   useEffect(() => {
-    getStocks();
+    if (!stocks.length) {
+      getStocks();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -24,7 +30,7 @@ function MyStocks() {
       const response = await stockService.fetchMyStocks(userId);
       const stockData = await response.json();
       const stocksWithPrices = await stockService.setStockPrices(stockData);
-      setStocks(stocksWithPrices);
+      dispatch(setMyStocks(stocksWithPrices));
     } catch {
       // TODO: handle error
     }
@@ -39,8 +45,8 @@ function MyStocks() {
       const { message } = await response.json();
 
       if (message === 'success') {
-        const updatedStocks = stocks.filter((stock) => stock.id !== stockId);
-        setStocks(updatedStocks);
+        dispatch(removeMyStock(stockId));
+        dispatch(removeAsFavorite(stockId));
       }
     } catch {
       // TODO: handle error

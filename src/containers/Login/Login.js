@@ -1,11 +1,14 @@
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setIsLoggedIn, setUserId } from './loginSlice';
+import loginService from '../../services/loginService';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
-import { Link, useNavigate } from 'react-router-dom';
-import loginService from '../../services/loginService';
 
-function Login({ onSetIsLoggedIn, onSetUserId }) {
+function Login() {
+  const dispatch = useDispatch();
   const [credentials, setCredentials] = useState({
     email: '',
     password: '',
@@ -27,8 +30,8 @@ function Login({ onSetIsLoggedIn, onSetUserId }) {
 
       if (message === 'success') {
         localStorage.setItem('token', token);
-        onSetIsLoggedIn(true);
-        onSetUserId(userId);
+        dispatch(setIsLoggedIn(true));
+        dispatch(setUserId(userId));
         navigate(`/`);
       }
     } catch {

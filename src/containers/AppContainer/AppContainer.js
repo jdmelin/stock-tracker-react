@@ -1,10 +1,14 @@
+
+import { useSelector } from 'react-redux';
+import { Link, Outlet } from 'react-router-dom';
+import { selectIsLoggedIn } from '../../containers/Login/loginSlice';
 import { Container } from 'react-bootstrap';
 import Navbar from 'react-bootstrap/Navbar';
-import { Link, Outlet } from 'react-router-dom';
 
-function AppContainer({ isLoggedIn }) {
+function AppContainer() {
+  const isLoggedIn = useSelector(selectIsLoggedIn)
   const hasToken = !!localStorage.getItem('token');
-
+  
   const renderLinks = () => {
     if (!isLoggedIn && !hasToken) {
       return (

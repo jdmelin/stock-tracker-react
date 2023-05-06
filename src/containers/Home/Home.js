@@ -1,6 +1,10 @@
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { selectUserId } from '../../containers/Login/loginSlice';
 
-function Home({ userId }) {
+function Home() {
+  const userId = useSelector(selectUserId);
+
   return (
     <>
       <h1 className="display-4">Welcome to Stock Tracker!</h1>

@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { selectIsLoggedIn } from './containers/Login/loginSlice';
 import AppContainer from './containers/AppContainer/AppContainer';
 import Home from './containers/Home/Home';
 import Login from './containers/Login/Login';
@@ -10,41 +11,27 @@ import Register from './containers/Register/Register';
 import Stocks from './containers/Stocks/Stocks';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userId, setUserId] = useState(null);
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<AppContainer isLoggedIn={isLoggedIn} />}>
+        <Route element={<AppContainer />}>
           <Route
             path="/"
             element={
-              <ProtectedRoute isLoggedIn={isLoggedIn}>
-                <Home userId={userId} />
+              <ProtectedRoute>
+                <Home />
               </ProtectedRoute>
             }
           />
-          {!isLoggedIn && (
-            <Route
-              path="/login"
-              element={
-                <Login
-                  onSetIsLoggedIn={setIsLoggedIn}
-                  onSetUserId={setUserId}
-                />
-              }
-            />
-          )}
-          <Route
-            path="/logout"
-            element={<Logout onSetIsLoggedIn={setIsLoggedIn} />}
-          />
+          {!isLoggedIn && <Route path="/login" element={<Login />} />}
+          <Route path="/logout" element={<Logout />} />
           {!isLoggedIn && <Route path="/register" element={<Register />} />}
           <Route
             path="/stocks/:userId"
             element={
-              <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <ProtectedRoute>
                 <Stocks />
               </ProtectedRoute>
             }
@@ -52,7 +39,7 @@ function App() {
           <Route
             path="/my-stocks/:userId"
             element={
-              <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <ProtectedRoute>
                 <MyStocks />
               </ProtectedRoute>
             }

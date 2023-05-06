@@ -1,16 +1,22 @@
 import { useEffect, useState } from 'react';
-import stockService from '../../services/stockService';
-import Row from 'react-bootstrap/Row';
-import Stock from '../../components/Stock/Stock';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
+import { addAsFavorite, selectStocks, setStocks } from './stocksSlice';
+import { addToMyStocks } from '../MyStocks/myStocksSlice';
+import stockService from '../../services/stockService';
+import Stock from '../../components/Stock/Stock';
+import Row from 'react-bootstrap/Row';
 
 function Stocks() {
-  const [stocks, setStocks] = useState([]);
+  const stocks = useSelector(selectStocks);
+  const dispatch = useDispatch();
   const [stockAverage, setStockAverage] = useState(0);
   const { userId } = useParams();
 
   useEffect(() => {
-    getStocks();
+    if (!stocks.length) {
+      getStocks();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -24,7 +30,7 @@ function Stocks() {
       const response = await stockService.fetchStocks(userId);
       const stockData = await response.json();
       const stocksWithPrices = await stockService.setStockPrices(stockData);
-      setStocks(stocksWithPrices);
+      dispatch(setStocks(stocksWithPrices))
     } catch {
       // TODO: handle error
     }
@@ -37,13 +43,8 @@ function Stocks() {
 
       if (message === 'success') {
         const stock = stocks.find((stock) => stock.id === stockId);
-        const updatedStock = { ...stock, favorite: true };
-        const filteredStocks = stocks.filter((s) => stock.id !== s.id);
-        const updatedStocks = [
-          ...JSON.parse(JSON.stringify(filteredStocks)),
-          updatedStock,
-        ].sort((a, b) => a.name.localeCompare(b.name));
-        setStocks(updatedStocks);
+        dispatch(addToMyStocks(stock));
+        dispatch(addAsFavorite(stockId));
       }
     } catch {
       // TODO: handle error
